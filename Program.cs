@@ -84,8 +84,8 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<AppDbContext>();
     context.Database.Migrate();
 
-    // สร้างบัญชี Admin คนแรกอัตโนมัติ (ถ้าฐานข้อมูลยังว่างเปล่า)
-    if (!context.Users.Any())
+    // บังคับสร้างบัญชี admin หากยังไม่มีชื่อผู้ใช้นี้ในระบบ
+    if (!context.Users.Any(u => u.Username == "admin"))
     {
         context.Users.Add(new Finance.Api.Models.User
         {
