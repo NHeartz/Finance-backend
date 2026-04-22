@@ -83,6 +83,19 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AppDbContext>();
     context.Database.Migrate();
+
+    // สร้างบัญชี Admin คนแรกอัตโนมัติ (ถ้าฐานข้อมูลยังว่างเปล่า)
+    if (!context.Users.Any())
+    {
+        context.Users.Add(new Finance.Api.Models.User
+        {
+            Username = "admin",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
+            Role = "Admin",
+            DisplayName = "ผู้ดูแลระบบ"
+        });
+        context.SaveChanges();
+    }
 }
 
 // Configure the HTTP request pipeline.
